@@ -1,0 +1,4 @@
+CREATE TABLE Pais (
+	idPais INT PRIMARY KEY,
+	nombrePais NVARCHAR(255)
+);
