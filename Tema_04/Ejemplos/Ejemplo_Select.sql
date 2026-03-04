@@ -106,5 +106,7 @@ SELECT *
 FROM cliente
 ORDER BY ciudad ASC, categoria DESC;
 
---Ejemplo_05
-SELECT 
+SELECT *
+FROM comercial
+LEFT JOIN pedido ON pedido.id_comercial = comercial.id
+WHERE pedido.id IS NULL;

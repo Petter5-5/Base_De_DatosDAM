@@ -148,9 +148,9 @@ VALUES ('Sofía', 'Martínez', 'Ruiz', '1998-10-010', 'sí', '609876543');
 DELETE FROM alumno
 WHERE apellido2 = 'Ortega';
 
-----------
---SELECT--
-----------
+------------
+---SELECT---
+------------
 
 --Ejercicio_01
 SELECT *
@@ -227,9 +227,19 @@ SELECT CONCAT(nombre, ' ', apellido1, ' ', apellido2) AS Nombre_Completo, LOWER(
 FROM alumno;
 
 --Ejercicio_17
-SELECT fecha_nacimiento AS Fecha_Completa, SUBSTRING(CAST(fecha_nacimiento AS NVARCHAR),9, 10) AS Dia, SUBSTRING(CAST(fecha_nacimiento AS NVARCHAR), 6, 7) AS Mes, SUBSTRING(CAST(fecha_nacimiento AS NVARCHAR),1, 4) AS Año
+SELECT fecha_nacimiento AS Fecha_Completa, DAY(fecha_nacimiento) AS Dia, MONTH(fecha_nacimiento) AS Mes, YEAR(fecha_nacimiento) AS Año 
 FROM alumno;
 
+--Ejercicio_18
+SELECT fecha_nacimiento AS Fecha_Nacimiento, DATENAME(DW, fecha_nacimiento) AS Nombre_Dia, DATENAME(MONTH, fecha_nacimiento) AS Nombre_Mes
+FROM alumno;
 
+--Ejercicio_19
+SELECT fecha_nacimiento AS Fecha_Nacimiento, DATEDIFF(DAY,fecha_nacimiento,GETDATE()) AS Dias_Desde_Nacimiento
+FROM alumno;
 
+--------------
+---GROUP BY---
+--------------
 
+--Ejercicio_01

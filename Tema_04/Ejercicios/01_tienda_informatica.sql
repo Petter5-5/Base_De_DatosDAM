@@ -272,3 +272,53 @@ WHERE (nombre LIKE '%disk%') OR (precio > 10);
 UPDATE producto
 SET precio = 150
 WHERE cod_fabricante = 2 OR cod_fabricante = 3 OR cod_fabricante = 4;
+
+------------
+---SELECT---
+------------
+
+--Ejercicio_01
+SELECT
+	*
+FROM producto
+WHERE cod_fabricante = ALL(
+	SELECT 
+		codigo
+	FROM fabricante
+	WHERE nombre LIKE 'Sony'
+);
+
+--Ejercicio_02
+SELECT TOP 1
+	*
+FROM producto
+WHERE cod_fabricante = ALL(
+	SELECT 
+		codigo
+	FROM fabricante
+	WHERE nombre LIKE 'Samsung'
+)
+ORDER BY precio DESC;
+
+--Ejercicio_03
+SELECT TOP 1
+	nombre
+FROM producto
+WHERE cod_fabricante = ALL(
+	SELECT 
+		codigo
+	FROM fabricante
+	WHERE nombre LIKE 'Hewlett-Packard'
+)
+ORDER BY precio DESC;
+
+--Ejercicio_04
+
+
+
+
+
+
+
+
+
