@@ -133,8 +133,95 @@ END;
 GO
 
 EXEC sp_alumanasMatriculadas 'Cálculo';
+GO
 --EJercicio_06
+DROP PROCEDURE sp_alumnosGrado;
+GO
+CREATE PROCEDURE sp_alumnosGrado @grado VARCHAR(100)
+AS
+BEGIN
+	IF EXISTS(SELECT id FROM grado WHERE nombre = @grado)
+	BEGIN
+		DECLARE @nombre AS VARCHAR(50),
+				@apellido1 AS VARCHAR(50),
+				@apellido2 AS VARCHAR(50);
+		DECLARE @numero AS INT;
+		SET @numero = (SELECT
+				COUNT(*)
+			FROM persona
+			WHERE id IN 
+			(
+				SELECT 
+					id_alumno
+				FROM alumno_se_matricula_asignatura
+				WHERE id_asignatura IN 
+				(
+					SELECT
+					id
+					FROM asignatura
+					WHERE id_grado = 
+					(
+						SELECT
+							id
+						FROM grado
+						WHERE nombre = @grado
+					)
+				)
+			));
+		PRINT 'El número de alumnos matricualdos en el grado "' +  @grado + '" es: ' + CAST(@numero AS VARCHAR(20));
+		PRINT 'Lista de alumnos matriculados:';
+		DECLARE cursor_alumnos CURSOR FOR
+			SELECT
+				nombre,
+				apellido1,
+				apellido2
+			FROM persona
+			WHERE id IN 
+			(
+				SELECT 
+					id_alumno
+				FROM alumno_se_matricula_asignatura
+				WHERE id_asignatura = 
+				(
+					SELECT
+					id
+					FROM asignatura
+					WHERE id_grado = 
+					(
+						SELECT
+							id
+						FROM grado
+						WHERE @nombre = @grado
+					)
+				)
+			)
+		OPEN cursor_alumnos;
+		FETCH NEXT FROM cursor_alumnos INTO @nombre, @apellido1, @apellido2
 
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			IF((SELECT sexo FROM persona WHERE nombre = @nombre AND apellido1 = @apellido1 AND apellido2 = @apellido2) = 'H')
+			BEGIN
+				PRINT 'Alumno: ' + @nombre + ' ' + @apellido1 + ' ' + @apellido2;  
+			END
+			ELSE
+			BEGIN
+				PRINT 'Alumna: ' + @nombre + ' ' + @apellido1 + ' ' + @apellido2;  
+			END
+			FETCH NEXT FROM cursor_alumnos INTO @nombre, @apellido1, @apellido2;
+		END;
+		
+		CLOSE cursor_alumnos;
+		DEALLOCATE cursor_alumnos;
+	END
+	ELSE
+	BEGIN
+		;THROW 50003, 'EL grado especificado no existe.', 1;
+	END
+END;	
+GO
+
+EXEC sp_alumnosGrado 'Grado en Ingeniería Eléctrica (Plan 2014)';
 
 
 
