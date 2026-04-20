@@ -79,6 +79,99 @@ GO
 EXEC sp_insertarGrado 'Grado en Ingeniería Agrícola (Plan 2015)';
 GO
 --Ejercicio_05
-CREATE PROCEDURE sp_
+CREATE PROCEDURE sp_alumanasMatriculadas @asignatura VARCHAR(100)
+AS
+BEGIN
+	IF EXISTS(SELECT id FROM asignatura WHERE nombre = @asignatura)
+	BEGIN
+		DECLARE @nombre AS VARCHAR(50),
+				@apellido1 AS VARCHAR(50),
+				@apellido2 AS VARCHAR(50);
+		DECLARE cursor_alumnos CURSOR FOR
+			SELECT
+				nombre,
+				apellido1,
+				apellido2
+			FROM persona
+			WHERE id IN 
+			(
+				SELECT 
+					id_alumno
+				FROM alumno_se_matricula_asignatura
+				WHERE id_asignatura = 
+				(
+					SELECT
+					id
+					FROM asignatura
+					WHERE nombre = @asignatura
+				)
+			)
+		OPEN cursor_alumnos;
+		FETCH NEXT FROM cursor_alumnos INTO @nombre, @apellido1, @apellido2
+
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			IF((SELECT sexo FROM persona WHERE nombre = @nombre AND apellido1 = @apellido1 AND apellido2 = @apellido2) = 'H')
+			BEGIN
+				PRINT 'Alumno: ' + @nombre + ' ' + @apellido1 + ' ' + @apellido2;  
+			END
+			ELSE
+			BEGIN
+				PRINT 'Alumna: ' + @nombre + ' ' + @apellido1 + ' ' + @apellido2;  
+			END
+			FETCH NEXT FROM cursor_alumnos INTO @nombre, @apellido1, @apellido2;
+		END;
+		
+		CLOSE cursor_alumnos;
+		DEALLOCATE cursor_alumnos;
+	END
+	ELSE
+	BEGIN
+		;THROW 50003, 'La asignatura especificada no existe.', 1;
+	END
+END;	
+GO
+
+EXEC sp_alumanasMatriculadas 'Cálculo';
+--EJercicio_06
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
