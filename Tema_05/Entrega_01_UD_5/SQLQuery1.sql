@@ -54,19 +54,31 @@ GO
 EXEC sp_asignarProfesor 'dw', 'aw', 'dwa', 'Derecho';
 GO
 --Ejercicio_04
-CREATE PROCEDURE sp_insertarGrado @nombre
+CREATE PROCEDURE sp_insertarGrado @nombre VARCHAR(100)
 AS
 BEGIN
 	BEGIN TRY
-		
+		IF EXISTS((SELECT id FROM grado WHERE nombre = @nombre))
+		BEGIN
+			;THROW 50017, 'Error: El grado con ese ID ya existe', 1;
+		END
+			INSERT INTO grado VALUES (@nombre);
 	END TRY
 	BEGIN CATCH
-		
+		SELECT
+			ERROR_NUMBER() AS ErrorNumber,
+			ERROR_SEVERITY() AS ErrorSeverity,
+			ERROR_STATE() AS ErrorState,
+			ERROR_PROCEDURE() AS ErrorProcedure,
+			ERROR_LINE() AS ErrorLine,
+			ERROR_MESSAGE() AS ErrorMessage;
 	END CATCH
 END;
 GO
 
 EXEC sp_insertarGrado 'Grado en Ingeniería Agrícola (Plan 2015)';
-
+GO
+--Ejercicio_05
+CREATE PROCEDURE sp_
 
 
